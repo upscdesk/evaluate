@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en" data-theme="sociology">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Answer evaluation | UPSC Desk</title>
+<meta name="description" content="Write one answer. It comes back with the examiner's notes in the margin, the marks it would earn, and the changes that will lift them.">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="doc">
+
+<section id="auth">
+  <div class="hd"><div class="wm">UPSC DESK</div>
+    <div class="sub">Answer evaluation</div></div>
+  <div class="body" style="max-width:560px">
+    <h1 style="font-size:24px;margin:4px 0 6px">Get your answer evaluated</h1>
+    <p class="hint" style="font-size:13.5px;max-width:52ch">Write one answer, or photograph one you
+      have already written by hand. It comes back with the examiner's notes in the margin, the marks
+      it would earn, and the changes that will lift them.</p>
+    <div id="step-email" style="margin-top:16px">
+      <label class="k" for="email">Your email</label>
+      <input id="email" type="email" autocomplete="email" placeholder="you@example.com">
+      <p class="hint">We send a six digit code. There is no password to remember.</p>
+      <p><button class="btn" id="send-code">Send the code</button></p>
+    </div>
+    <div id="step-code" class="hidden">
+      <label class="k" for="code">Six digit code</label>
+      <input id="code" inputmode="numeric" maxlength="6" placeholder="000000">
+      <p class="hint">Sent to <span id="sent-to"></span>. It expires in ten minutes.</p>
+      <p><button class="btn" id="verify">Sign in</button>
+         <button class="btn alt" id="back">Use another email</button></p>
+    </div>
+    <div id="auth-err"></div>
+  </div>
+</section>
+
+<section id="compose" class="hidden">
+
+
+<div class="hd"><div class="wm">UPSC DESK</div>
+  <div class="sub" id="hdsub">Answer evaluation &middot; Sociology Optional</div></div>
+
+<div class="status">
+  <div class="left">Signed in as <b id="who"></b>. <span id="left"></span></div>
+  <div class="pips" id="pips" title="Free evaluations this month"></div>
+  <a href="#" id="signout">Sign out</a>
+</div>
+
+<div class="steps">
+  <div class="step on"><span class="n">1</span><span class="t">Which paper</span></div>
+  <div class="step on"><span class="n">2</span><span class="t">The question</span></div>
+  <div class="step"><span class="n">3</span><span class="t">Your answer</span></div>
+</div>
+
+<div class="sechd">
+  <span class="ico"><svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="4" y="4" width="10" height="10"/><rect x="18" y="4" width="10" height="10"/><rect x="4" y="18" width="10" height="10"/><rect x="18" y="18" width="10" height="10"/></svg></span>
+  <div><h2>Which paper is this answer for?</h2>
+  <p>Pick the desk and the page adjusts to it, because each paper is marked on entirely different things</p></div></div>
+
+<div class="desks" id="desks">
+  <div class="desk s" data-desk="sociology" aria-selected="true">
+    <div class="cap"></div>
+    <span class="tick"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12.5l5.5 5.5L20 6"/></svg></span>
+    <div class="in"><div class="top">
+      <span class="ic"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="16" cy="7" r="3.3"/><circle cx="7" cy="24" r="3.3"/><circle cx="25" cy="24" r="3.3"/><path d="M13.5 9.5 9.3 20.9M18.5 9.5l4.2 11.4M10.3 24.3h11.4"/></svg></span>
+      <div><h3>Sociology</h3><div class="sub">Optional</div></div></div>
+      <p class="what">Marked on the concept, the thinker, and whether the two are actually put to work on Indian material.</p>
+      <p class="marks">Papers I and II &middot; <b>10 and 20 mark</b> questions &middot; 150 and 250 words</p>
+    </div>
+  </div>
+
+  <div class="desk e" data-desk="essay" aria-selected="false">
+    <div class="cap"></div>
+    <span class="tick"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12.5l5.5 5.5L20 6"/></svg></span>
+    <div class="in"><div class="top">
+      <span class="ic"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M16 3.5 9.5 17.5c0 4 2.9 7 6.5 7s6.5-3 6.5-7L16 3.5z"/><path d="M16 15v13.5"/><circle cx="16" cy="17.6" r="1.9"/></svg></span>
+      <div><h3>Essay</h3><div class="sub">Paper I</div></div></div>
+      <p class="what">Marked on decoding, thesis, range across domains, and whether you ever disagree with yourself.</p>
+      <p class="marks">Sections A and B &middot; <b>125 marks</b> each &middot; 1,000 to 1,200 words</p>
+    </div>
+  </div>
+
+  <div class="desk g" data-desk="gs" aria-selected="false">
+    <div class="cap"></div>
+    <span class="tick"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 12.5l5.5 5.5L20 6"/></svg></span>
+    <div class="in"><div class="top">
+      <span class="ic"><svg width="30" height="30" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M16 8.5C13.5 6.5 9.8 5.8 5 6v18c4.8-.2 8.5.5 11 2.5 2.5-2 6.2-2.7 11-2.5V6c-4.8-.2-8.5.5-11 2.5z"/><path d="M16 8.5v18"/></svg></span>
+      <div><h3>General Studies</h3><div class="sub">GS-I to GS-IV</div></div></div>
+      <p class="what">Marked on the directive, the named anchor, sourced data, and whether both limbs were answered.</p>
+      <p class="marks">GS-I to IV &middot; <b>10, 15 and 20 mark</b> questions &middot; 150 and 250 words</p>
+    </div>
+  </div>
+</div>
+
+<div class="sechd">
+  <span class="ico"><svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 4h14l6 6v18H6z"/><path d="M20 4v6h6"/><path d="M11 17h10M11 22h7"/></svg></span>
+  <div><h2>What exactly are you answering?</h2>
+  <p>The marks and the word limit decide how it is judged, so these should match the paper you are practising from</p></div></div>
+<div class="body">
+  <div class="row">
+    <div><label class="k" for="paper">Paper</label><select id="paper"></select></div>
+    <div><label class="k" for="marks">Marks and length</label><select id="marks"></select></div>
+    <div><label class="k" for="year">Year, if it is a past question</label>
+      <select id="year"><option>Not from a past paper</option><option>2026</option><option>2025</option>
+      <option>2024</option><option>2023</option><option>2022</option><option>Earlier</option></select></div>
+  </div>
+  <div style="margin-top:12px">
+    <label class="k" for="q">The question, word for word as it was set</label>
+    <textarea id="q" rows="2" placeholder="Examine the relevance of the Marxian critique of capitalism in understanding contemporary Indian society."></textarea>
+    <p class="hint">Copy it exactly. If the wording changes the directive changes, and the directive is what most of the marks turn on.</p>
+  </div>
+</div>
+
+<div class="sechd">
+  <span class="ico"><svg width="24" height="24" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 26.5 6 20 20.5 5.5a3.2 3.2 0 0 1 4.5 0l1.5 1.5a3.2 3.2 0 0 1 0 4.5L12 26l-8 .5z"/><path d="M18.5 7.5 24.5 13.5"/></svg></span>
+  <div><h2>Your answer</h2>
+  <p>Type it out, or photograph the page you have already written by hand</p></div></div>
+<div class="body" style="padding-top:10px">
+  <div class="ways">
+    <div class="way">
+      <div class="wh"><span class="ic"><svg width="21" height="21" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="6" width="26" height="20"/><path d="M8 13h16M8 17h16M8 21h9"/></svg></span>
+        <h4>Type or paste it</h4></div>
+      <p>Best if you practise on a laptop.</p>
+      <textarea id="ans" rows="7" placeholder="Write your answer here."></textarea>
+    </div>
+    <div class="way">
+      <div class="wh"><span class="ic"><svg width="21" height="21" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="9" width="26" height="18" rx="2"/><path d="M11 9l2-3h6l2 3"/><circle cx="16" cy="18" r="5"/></svg></span>
+        <h4>Or send the page you wrote</h4></div>
+      <p>Most aspirants write by hand, so this is the usual route.</p>
+      <div class="drop">
+        <span class="ic"><svg width="28" height="28" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M16 22V6"/><path d="M10 12l6-6 6 6"/><path d="M5 22v4h22v-4"/></svg></span>
+        <b>Choose a photo or PDF</b>
+        <span>You can add up to four pages</span>
+        <small>JPG, PNG or PDF &middot; up to 5 MB a page</small>
+      </div>
+      <p class="hint" style="margin-top:9px">Handwriting is never marked down. Lay the page flat and keep the light
+        even. If too much of it cannot be read you will be told, rather than given a confident mark on a page
+        nobody could read.</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="btn" id="go">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 12.5l5.5 5.5L20 6"/></svg>
+      Mark this answer</button>
+    <span class="cost" id="cost">This uses <b>1</b> of your five free evaluations. It takes about a minute.</span>
+  </div>
+</div>
+
+<div class="pricing">
+  <p class="k" style="margin:0 0 7px">How the free evaluations work</p>
+  <table>
+    <tr><th>What you send</th><th class="n">Uses</th><th style="padding-left:16px">Why</th></tr>
+    <tr><td>A 10 or 15 mark answer</td><td class="n">1</td><td style="padding-left:16px">150 to 250 words</td></tr>
+    <tr><td>A 20 mark answer, or a GS-IV case study</td><td class="n">1</td><td style="padding-left:16px">250 words</td></tr>
+    <tr><td>A full essay</td><td class="n">2</td><td style="padding-left:16px">1,000 to 1,200 words, roughly five times the reading</td></tr>
+  </table>
+  <p class="hint" style="max-width:660px">Five free every month, resetting on the first. Subscribers get thirty a
+    month on Sociology, twenty on Essay and ten on GS, on the plan they already hold.</p>
+</div>
+
+<footer><p class="rf">Empirically grounded. Theoretically anchored. Exam-ready.</p>
+  <p>Marked against a published UPSC rubric. An informed estimate, not an official evaluation.</p></footer>
+</section>
+
+<section id="result" class="hidden"></section>
+
+<footer>
+  <p class="rf">Empirically grounded. Theoretically anchored. Exam-ready.</p>
+  <p>Marked against a published UPSC rubric. An informed estimate, not an official evaluation.</p>
+</footer>
+</div>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
