@@ -54,6 +54,7 @@ export const RESULT_SCHEMA = {
     band_justification: { type: 'string', description: 'One sentence saying why this band and not the one above.' },
     dimensions: {
       type: 'array',
+      description: 'Marks earned against each dimension. The maximums sum to the marks the question carries, and the scores sum to the overall score.',
       items: {
         type: 'object', additionalProperties: false, required: ['name', 'score', 'max', 'note'],
         properties: { name: { type: 'string' }, score: { type: 'number' }, max: { type: 'number' }, note: { type: 'string' } },
@@ -101,8 +102,9 @@ How to mark:
 - The score is what this script earns as written. "attainable" is what the same reading would earn with
   your corrections applied, and it must be honest: corrections to expression move a script a little,
   a missing concept or a missed limb moves it more.
-- Marks lost must add up. The dimension scores are marks lost against each dimension's maximum, and
-  their maximums must sum to the marks the question carries.
+- The arithmetic must hold. Each dimension's "score" is the marks this script earned against that
+  dimension's "max", the maximums must sum to the marks the question carries, and the dimension
+  scores must sum to the overall score.
 - Every margin comment must anchor to a paragraph that exists, by copying its opening words into "anchor".
   Where the note is about one phrase, copy that phrase verbatim into "target" so it can be underlined.
 - Write the margin notes as an examiner writes them: short, specific, and about this script.

@@ -230,7 +230,7 @@ function renderResult(r, sub, ent) {
       <div class="rung ceil"><div class="k">How far this could go</div>${fig(ceil, sub.marks)}
         ${isEssay ? paperLevel(ceil) : ''}<div class="n">${esc(r.ceiling_note || 'The top band this paper actually awards.')}</div></div>
     </div>
-    <table><tr><th>Where the ${lost} marks went</th><th style="text-align:right">Lost</th></tr>${dims}</table>
+    <table><tr><th>How the ${r.score} marks were earned, and where ${lost} went</th><th style="text-align:right">Earned</th></tr>${dims}</table>
     ${r.verdict ? `<p class="verdict"><strong>If you change one thing, change this.</strong> ${esc(r.verdict)}</p>` : ''}
   </div>
 
