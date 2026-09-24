@@ -10,21 +10,27 @@ export const PLAN_ALLOWANCE = { sociology: 30, essay: 20, gs: 10 };
 
 async function paidPlan(env, email) {
   if (!env.SUBSCRIBERS_URL) return null;
-  try {
-    const url = `${env.SUBSCRIBERS_URL}${env.SUBSCRIBERS_URL.includes('?') ? '&' : '?'}email=${encodeURIComponent(email)}`;
-    const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
-    if (!res.ok) return null;
-    const d = await res.json();
-    // the sheet answers with the desk and whether the subscription is live
-    const active = d.active ?? d.status === 'active';
-    const desk = String(d.desk || d.plan || '').toLowerCase();
-    if (!active) return null;
-    return ['sociology', 'essay', 'gs'].find((k) => desk.includes(k)) || null;
-  } catch (e) {
-    // the evaluator must not go down because a Google script is slow; fall back to free
-    console.error('subscriber lookup failed', e.message);
-    return null;
-  }
+  // The Subscribers API answers with the live list for one desk - {active_emails, count} -
+  // filtered by ?subject=, not with a record for one person. So ask each desk whether it
+  // holds this address. Sociology first, so somebody who subscribes to more than one desk
+  // gets the larger allowance rather than whichever answered first.
+  const base = env.SUBSCRIBERS_URL;
+  const ask = async (desk) => {
+    try {
+      const url = `${base}${base.includes('?') ? '&' : '?'}subject=${encodeURIComponent(desk)}`;
+      const res = await fetch(url, { signal: AbortSignal.timeout(6000), redirect: 'follow' });
+      if (!res.ok) return null;
+      const d = await res.json();
+      if (!Array.isArray(d?.active_emails)) return null;
+      return d.active_emails.some((e) => String(e).trim().toLowerCase() === email) ? desk : null;
+    } catch (e) {
+      // the evaluator must not go down because a Google script is slow or redeployed
+      console.error(`subscriber lookup failed for ${desk}`, e.message);
+      return null;
+    }
+  };
+  const hits = await Promise.all(['sociology', 'essay', 'gs'].map(ask));
+  return hits.find(Boolean) || null;
 }
 
 export async function entitlement(env, email) {
