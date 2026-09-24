@@ -1,0 +1,12 @@
+{
+  "name": "upscdesk-eval-worker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:init": "wrangler d1 execute upscdesk-eval --remote --file=./schema.sql"
+  },
+  "dependencies": { "@anthropic-ai/sdk": "^0.70.0" },
+  "devDependencies": { "wrangler": "^4.0.0" }
+}

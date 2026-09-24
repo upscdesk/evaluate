@@ -1,0 +1,22 @@
+name = "upscdesk-eval"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+# The page calls this Worker from evaluate.upscdesk.com, which is GitHub Pages, so
+# every response carries CORS headers for that origin and nothing else.
+[vars]
+ALLOWED_ORIGIN = "https://evaluate.upscdesk.com"
+MAIL_FROM = "UPSC Desk <evaluate@upscdesk.com>"
+FREE_PER_MONTH = "5"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "upscdesk-eval"
+database_id = "PUT_THE_ID_FROM_WRANGLER_D1_CREATE_HERE"
+
+# Secrets, set with `wrangler secret put NAME` - never written in this file:
+#   ANTHROPIC_API_KEY   the marking model
+#   RESEND_API_KEY      the six digit code emails
+#   TOKEN_SECRET        signs the sign-in tokens (any long random string)
+#   SUBSCRIBERS_URL     the existing Subscribers Apps Script, for paid entitlement
