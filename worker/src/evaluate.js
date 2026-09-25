@@ -10,6 +10,7 @@ import { entitlement } from './entitlement.js';
 import { DESKS, RESULT_SCHEMA, systemPrompt, userPrompt } from './rubric.js';
 
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const MAX_PAGES = 4;
 const OK_IMAGE = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 // The page offers "a photo or PDF", and a scanned script is very often a PDF, so the
 // promise on the page has to be true here.
@@ -20,14 +21,23 @@ export async function evaluate(req, env, email, service = false) {
   const desk = String(p.desk || '').toLowerCase();
   if (!DESKS[desk]) return json(env, { error: 'Pick which paper this answer is for.' }, 400);
   if (!p.question || !String(p.question).trim()) return json(env, { error: 'Paste the question exactly as it was set.' }, 400);
-  if (!p.answer && !p.image) return json(env, { error: 'Type your answer, or attach a photograph of it.' }, 400);
-  if (p.image) {
-    if (!OK_IMAGE.includes(p.image_type) && p.image_type !== OK_PDF) {
-      return json(env, { error: 'Attach a JPEG, PNG or PDF of the page.' }, 400);
+  if (!p.answer && !p.image && !(Array.isArray(p.pages) && p.pages.length)) {
+    return json(env, { error: 'Type your answer, or attach a photograph of it.' }, 400);
+  }
+  // a script runs to more than one page; the older single-image field still works
+  const pages = Array.isArray(p.pages) && p.pages.length
+    ? p.pages
+    : (p.image ? [{ data: p.image, type: p.image_type }] : []);
+  if (pages.length > MAX_PAGES) {
+    return json(env, { error: `Four pages is the most that can be marked at once.` }, 400);
+  }
+  for (const pg of pages) {
+    if (!OK_IMAGE.includes(pg.type) && pg.type !== OK_PDF) {
+      return json(env, { error: 'Attach a JPEG, PNG or PDF of each page.' }, 400);
     }
     // base64 is about 4/3 of the bytes it encodes
-    if (String(p.image).length * 0.75 > MAX_IMAGE_BYTES) {
-      return json(env, { error: 'That image is over 5 MB. Photograph the page again at lower resolution.' }, 400);
+    if (String(pg.data || '').length * 0.75 > MAX_IMAGE_BYTES) {
+      return json(env, { error: 'A page is over 5 MB. Photograph it again at lower resolution.' }, 400);
     }
   }
 
@@ -47,14 +57,15 @@ export async function evaluate(req, env, email, service = false) {
 
   const marks = Number(p.marks) || 10;
   const content = [];
-  if (p.image) {
-    // a PDF goes in as a document, an image as an image; the model reads the handwriting
-    // either way, and a document must precede the text block
-    content.push(p.image_type === OK_PDF
-      ? { type: 'document', source: { type: 'base64', media_type: OK_PDF, data: p.image } }
-      : { type: 'image', source: { type: 'base64', media_type: p.image_type, data: p.image } });
+  // a PDF goes in as a document, an image as an image; the model reads the handwriting
+  // either way, and both must precede the text block. Pages go in the order they were
+  // attached, because an answer is continuous across them.
+  for (const pg of pages) {
+    content.push(pg.type === OK_PDF
+      ? { type: 'document', source: { type: 'base64', media_type: OK_PDF, data: pg.data } }
+      : { type: 'image', source: { type: 'base64', media_type: pg.type, data: pg.data } });
   }
-  content.push({ type: 'text', text: userPrompt({ paper: p.paper, marks, word_limit: Number(p.word_limit) || 150, question: p.question, answer: p.answer }) });
+  content.push({ type: 'text', text: userPrompt({ paper: p.paper, marks, word_limit: Number(p.word_limit) || 150, question: p.question, answer: p.answer, pageCount: pages.length }) });
 
   const client = new Anthropic({ apiKey: env.ANTHROPIC_API_KEY });
   let result;

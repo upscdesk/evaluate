@@ -111,7 +111,7 @@ How to mark:
 - Do not praise an answer to be kind. An aspirant who is told a 9 is a 14 is being harmed.`;
 }
 
-export function userPrompt({ paper, marks, word_limit, question, answer }) {
+export function userPrompt({ paper, marks, word_limit, question, answer, pageCount = 0 }) {
   return `Paper: ${paper}
 Marks: ${marks}
 Word limit: ${word_limit}
@@ -120,5 +120,5 @@ The question as set:
 ${question}
 
 ${answer ? `The answer, as typed by the candidate:\n${answer}`
-         : 'The answer is in the attached photograph or scan of a handwritten script. Transcribe it faithfully first, keeping the paragraph breaks, and mark what is actually written, not what you think was meant.'}`;
+         : `The answer is in the ${pageCount > 1 ? `${pageCount} attached pages, which are one continuous answer in the order given` : 'attached photograph or scan'} of a handwritten script. Transcribe it faithfully first, keeping the paragraph breaks, and mark what is actually written, not what you think was meant.`}`;
 }

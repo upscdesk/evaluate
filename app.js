@@ -48,7 +48,6 @@ $('send-code').onclick = async () => {
   } catch (e) { fail('auth-err', e.message); }
   finally { $('send-code').disabled = false; }
 };
-$('back').onclick = () => { hide('step-code'); show('step-email'); $('auth-err').innerHTML = ''; };
 $('verify').onclick = async () => {
   $('auth-err').innerHTML = '';
   $('verify').disabled = true;
@@ -106,12 +105,54 @@ document.getElementById('desks').addEventListener('click', (e) => {
 $('marks').onchange = cost;
 
 /* ----------------------------------------------------------------- submit */
-const readImage = (file) => new Promise((res, rej) => {
+/* --------------------------------------------------------------- the pages
+   A script runs to more than one page, and the page has always said four are allowed.
+   There was no file input at all behind that box, so nothing could be attached. */
+const MAX_PAGES = 4, MAX_BYTES = 5 * 1024 * 1024;
+let pages = [];
+
+const readFile = (file) => new Promise((res, rej) => {
   const r = new FileReader();
-  r.onerror = () => rej(new Error('could not read that image'));
-  r.onload = () => res({ data: String(r.result).split(',')[1], type: file.type || 'image/jpeg' });
+  r.onerror = () => rej(new Error(`${file.name} could not be read.`));
+  r.onload = () => res({ name: file.name, type: file.type || 'image/jpeg', data: String(r.result).split(',')[1] });
   r.readAsDataURL(file);
 });
+
+function drawPages() {
+  const ul = $('pages'); if (!ul) return;
+  ul.innerHTML = pages.map((p, i) =>
+    `<li><span>${i + 1}. ${esc(p.name)}</span> <button type="button" class="rm" data-i="${i}">remove</button></li>`).join('');
+  ul.querySelectorAll('.rm').forEach((b) => {
+    b.onclick = () => { pages.splice(Number(b.dataset.i), 1); drawPages(); };
+  });
+  const d = $('drop');
+  if (d) d.querySelector('b').textContent = pages.length
+    ? `${pages.length} of ${MAX_PAGES} pages attached. Add another`
+    : 'Choose a photo or PDF';
+}
+
+async function addFiles(list) {
+  if ($('compose-err')) $('compose-err').innerHTML = '';
+  for (const f of Array.from(list || [])) {
+    if (pages.length >= MAX_PAGES) { fail('compose-err', 'Four pages is the most that can be marked at once.'); break; }
+    if (f.size > MAX_BYTES) { fail('compose-err', `${f.name} is over 5 MB. Photograph that page again at lower resolution.`); continue; }
+    try { pages.push(await readFile(f)); } catch (e) { fail('compose-err', e.message); }
+  }
+  drawPages();
+}
+
+if ($('drop')) {
+  $('drop').onclick = () => $('photo').click();
+  // the same file can be chosen twice in a row, so the input is cleared after every pick
+  $('photo').onchange = (e) => { addFiles(e.target.files); e.target.value = ''; };
+  ['dragenter', 'dragover'].forEach((ev) => $('drop').addEventListener(ev, (e) => {
+    e.preventDefault(); $('drop').classList.add('over');
+  }));
+  ['dragleave', 'drop'].forEach((ev) => $('drop').addEventListener(ev, (e) => {
+    e.preventDefault(); $('drop').classList.remove('over');
+    if (ev === 'drop') addFiles(e.dataTransfer.files);
+  }));
+}
 
 $('go').onclick = async () => {
   const errBox = $('compose-err') || (() => {
@@ -121,17 +162,15 @@ $('go').onclick = async () => {
   errBox.innerHTML = '';
   const question = $('q').value.trim();
   const answer = $('ans').value.trim();
-  const file = $('photo') ? $('photo').files[0] : null;
   if (!question) return fail('compose-err', 'Paste the question exactly as it was set.');
-  if (!answer && !file) return fail('compose-err', 'Type your answer, or attach a photograph of it.');
-  if (file && file.size > 5 * 1024 * 1024)
-    return fail('compose-err', 'That image is over 5 MB. Photograph the page again at lower resolution.');
+  if (!answer && !pages.length) return fail('compose-err', 'Type your answer, or attach a photograph of it.');
 
   const opt = $('marks').selectedOptions[0];
   const payload = { desk, paper: $('paper').value,
     marks: Number(opt.dataset.marks), word_limit: Number(opt.dataset.words), question };
-  if (file) { const img = await readImage(file); payload.image = img.data; payload.image_type = img.type; }
-  else payload.answer = answer;
+  if (pages.length) {
+    payload.pages = pages.map((p) => ({ data: p.data, type: p.type }));
+  } else payload.answer = answer;
 
   $('go').disabled = true; const label = $('go').innerHTML;
   $('go').textContent = 'Evaluating, about a minute';
