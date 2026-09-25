@@ -342,13 +342,16 @@ footer .rf{font-weight:700;color:var(--ink)}
     linear-gradient(118deg, var(--soc-d) 0%, var(--soc) 26%, var(--ess) 54%,
                     var(--ess-d) 66%, var(--gs) 86%, var(--gs-d) 100%);
 }
-#auth .hd::after {
-  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+/* ::before, not ::after: .hd::after is the brand's dot grid, and taking it would strip
+   the motif off this header alone */
+#auth .hd::before {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; z-index: 1;
   background: linear-gradient(90deg, var(--soc-a) 0%, var(--soc-a) 30%,
               var(--ess-a) 38%, var(--ess-a) 62%, var(--gs-a) 70%, var(--gs-a) 100%);
 }
-#auth .body { background: linear-gradient(180deg, rgba(30, 58, 95, .05) 0%,
-              rgba(122, 45, 58, .04) 45%, rgba(62, 42, 82, .05) 100%); }
+/* on the section, not on .body, which is capped at 560px and left a hard edge mid-page */
+#auth { background: linear-gradient(180deg, rgba(30, 58, 95, .05) 0%,
+        rgba(122, 45, 58, .04) 45%, rgba(62, 42, 82, .05) 100%); }
 #auth h1 { background: linear-gradient(96deg, var(--soc) 0%, var(--ess) 52%, var(--gs) 100%);
   -webkit-background-clip: text; background-clip: text; color: transparent; }
 #auth .btn {
