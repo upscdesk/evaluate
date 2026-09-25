@@ -22,6 +22,11 @@ const CFG = {
 };
 const FREE = 5;
 
+/* The pamphlet's evaluator codes carry ?d=<desk>, one per desk, so somebody scanning the
+   Sociology pamphlet lands on Sociology. The parameter was printed but never read. */
+const _d = new URLSearchParams(location.search).get('d');
+const START_DESK = Object.keys(CFG).includes(_d) ? _d : 'sociology';
+
 /* -------------------------------------------------------------------- api */
 async function api(path, opts = {}) {
   const headers = { 'content-type': 'application/json', ...(opts.headers || {}) };
@@ -97,7 +102,7 @@ function enterCompose(ent, email) {
   if (email) $('who').textContent = email;
   $('left').textContent = entitlementLine(ent);
   pips(ent ? ent.used || 0 : 0);
-  fillDesk(desk || 'sociology');
+  fillDesk(desk || START_DESK);
 }
 document.getElementById('desks').addEventListener('click', (e) => {
   const d = e.target.closest('.desk'); if (d) fillDesk(d.dataset.desk);
@@ -341,7 +346,7 @@ function renderResult(r, sub, ent) {
 
 /* ------------------------------------------------------------------ start */
 (async function start() {
-  if (!token) { fillDesk('sociology'); return; }
+  if (!token) { fillDesk(START_DESK); return; }
   try { const me = await api('/me'); enterCompose(me.entitlement, me.email); }
   catch (_) { localStorage.removeItem(TOKEN_KEY); token = null; }
 })();
