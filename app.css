@@ -321,3 +321,13 @@ footer .rf{font-weight:700;color:var(--ink)}
   font-size: 14px; padding: 7px 10px; border: 1px solid rgba(0, 0, 0, .12); border-radius: 8px; margin-top: 6px; }
 #pages .rm { background: none; border: 0; padding: 0; font: inherit; font-size: 13px;
   color: #8A7C5E; text-decoration: underline; cursor: pointer; }
+
+/* the wrong-paper notice */
+.modal { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center;
+  justify-content: center; background: rgba(20, 16, 24, .55); padding: 20px; }
+.modal.hidden { display: none; }
+.modal-box { background: #fff; border-radius: 14px; padding: 22px 24px; max-width: 30rem;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, .35); }
+.modal-box h3 { margin: 0 0 8px; font-size: 19px; }
+.modal-box p { margin: 0 0 10px; font-size: 15px; line-height: 1.45; }
+.modal-acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }

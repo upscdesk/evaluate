@@ -176,7 +176,20 @@ $('go').onclick = async () => {
   $('go').textContent = 'Evaluating, about a minute';
   try {
     const out = await api('/evaluate', { method: 'POST', body: JSON.stringify(payload) });
-    renderResult(out.result, payload, out.entitlement);
+    // An answer can be on a similar topic and still belong to another paper, and marking a
+    // Sociology script against the GS rubric quietly produces a number that means nothing.
+    // The marking is done either way; this only makes sure nobody reads it unaware.
+    const dc = out.result && out.result.desk_check;
+    if (dc && dc.matches === false) {
+      const named = { sociology: 'Sociology Optional', essay: 'Essay', gs: 'General Studies' }[dc.looks_like];
+      $('dw-note').textContent = dc.note || `This reads like ${named || 'a different paper'}.`;
+      $('dw-sub').textContent = `You chose ${CFG[desk].sub}, and it has been marked against that rubric, so the marks will not mean much${named ? `. Submit it under ${named} to be marked properly.` : '.'}`;
+      show('deskwarn');
+      $('dw-ok').onclick = () => { hide('deskwarn'); renderResult(out.result, payload, out.entitlement); };
+      $('dw-again').onclick = () => { hide('deskwarn'); hide('result'); $('paper').focus(); };
+    } else {
+      renderResult(out.result, payload, out.entitlement);
+    }
   } catch (e) {
     if (e.status === 402) fail('compose-err',
       'No evaluations left this month. Subscriber plans include a monthly allowance.');

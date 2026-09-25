@@ -164,6 +164,20 @@
 
 <section id="result" class="hidden"></section>
 
+<!-- Raised when the marker judges the answer belongs to a different paper. It never blocks
+     the marking, which has already been done; it tells the writer what was found. -->
+<div id="deskwarn" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="dw-h">
+  <div class="modal-box">
+    <h3 id="dw-h">This looks like a different paper</h3>
+    <p id="dw-note"></p>
+    <p class="hint" id="dw-sub"></p>
+    <p class="modal-acts">
+      <button class="btn" id="dw-ok">Show the marking anyway</button>
+      <button class="btn alt" id="dw-again">Choose the right paper</button>
+    </p>
+  </div>
+</div>
+
 <footer>
   <p class="rf">Empirically grounded. Theoretically anchored. Exam-ready.</p>
   <p>Marked against a published UPSC rubric. An informed estimate, not an official evaluation.</p>

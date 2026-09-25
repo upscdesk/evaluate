@@ -40,10 +40,19 @@ closes with a summary instead of a way forward.`,
 export const RESULT_SCHEMA = {
   type: 'object',
   additionalProperties: false,
-  required: ['transcription', 'words_written', 'score', 'attainable', 'ceiling', 'ceiling_note',
-             'band', 'band_justification', 'dimensions', 'margin_comments', 'three_fixes',
-             'verdict', 'rewritten_answer', 'model_answer'],
+  required: ['desk_check', 'transcription', 'words_written', 'score', 'attainable', 'ceiling',
+             'ceiling_note', 'band', 'band_justification', 'dimensions', 'margin_comments',
+             'three_fixes', 'verdict', 'rewritten_answer', 'model_answer'],
   properties: {
+    desk_check: {
+      type: 'object', additionalProperties: false, required: ['matches', 'looks_like', 'note'],
+      description: 'Whether this answer belongs to the paper the writer chose.',
+      properties: {
+        matches: { type: 'boolean' },
+        looks_like: { type: 'string', enum: ['sociology', 'essay', 'gs', 'unclear'] },
+        note: { type: 'string', description: 'One sentence saying what it reads as and why. Empty when it matches.' },
+      },
+    },
     transcription: { type: 'string', description: 'The answer exactly as written, paragraphs separated by a blank line. For a typed answer, repeat it unchanged.' },
     words_written: { type: 'integer' },
     score: { type: 'number', description: 'Marks this answer earns as written, out of the marks asked for.' },
@@ -96,6 +105,18 @@ and you are neither generous nor cruel: you award what the script earns.
 This is the ${d.name} paper. It is marked on ${d.marked_on}.
 
 ${d.guidance}
+
+Before you mark, say whether this answer belongs to the paper the writer chose, in desk_check:
+- Sociology Optional answers argue through a named sociologist and a concept, and use Indian
+  material as evidence for that concept.
+- Essay answers are long, discursive, take a position on a theme and range across domains;
+  they do not answer a syllabus question.
+- General Studies answers obey a directive word, answer each limb, and cite committees,
+  Articles, schemes or data.
+An answer can be on a similar topic and still belong to a different paper: what decides it is
+how it argues, not what it is about. Set matches false only when you are confident, and say in
+one sentence what it reads as. Mark it against the chosen paper either way; the writer is told
+what you found and decides what to do.
 
 How to mark:
 - Read what is actually on the page. Never credit something the writer did not write.
