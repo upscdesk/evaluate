@@ -95,13 +95,17 @@ export async function evaluate(req, env, email, service = false) {
     }, 503);
   }
 
-  // counted only once a real evaluation exists, so a failure never costs an allowance
-  if (!service) await env.DB.prepare(
+  // An answer marked against the wrong paper's rubric is not the evaluation the writer
+  // asked for, so it does not cost them one. A failure never costs one either: both are
+  // counted only when a real, usable evaluation exists.
+  const mismatch = result?.desk_check?.matches === false;
+  if (!service && !mismatch) await env.DB.prepare(
     'INSERT INTO evaluations (id, email, desk, paper, marks, score, month, created_at) VALUES (?1,?2,?3,?4,?5,?6,?7,?8)'
   ).bind(crypto.randomUUID(), email, desk, String(p.paper || ''), marks, Number(result.score) || 0, ent.month, new Date().toISOString()).run();
 
   // renderResult(out.result, payload, out.entitlement): the evaluation is nested, not spread
   return json(env, service
     ? { result }
-    : { result, entitlement: { ...ent, used: ent.used + 1, remaining: ent.remaining - 1 } });
+    : { result, entitlement: mismatch ? ent
+        : { ...ent, used: ent.used + 1, remaining: ent.remaining - 1 } });
 }

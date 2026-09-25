@@ -183,7 +183,7 @@ $('go').onclick = async () => {
     if (dc && dc.matches === false) {
       const named = { sociology: 'Sociology Optional', essay: 'Essay', gs: 'General Studies' }[dc.looks_like];
       $('dw-note').textContent = dc.note || `This reads like ${named || 'a different paper'}.`;
-      $('dw-sub').textContent = `You chose ${CFG[desk].sub}, and it has been marked against that rubric, so the marks will not mean much${named ? `. Submit it under ${named} to be marked properly.` : '.'}`;
+      $('dw-sub').textContent = `You chose ${CFG[desk].sub}, and it has been marked against that rubric, so the marks will not mean much${named ? `. Submit it under ${named} to be marked properly.` : '.'} This one has not been counted against your evaluations.`;
       show('deskwarn');
       $('dw-ok').onclick = () => { hide('deskwarn'); renderResult(out.result, payload, out.entitlement); };
       $('dw-again').onclick = () => { hide('deskwarn'); hide('result'); $('paper').focus(); };

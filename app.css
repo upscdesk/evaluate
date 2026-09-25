@@ -331,3 +331,35 @@ footer .rf{font-weight:700;color:var(--ink)}
 .modal-box h3 { margin: 0 0 8px; font-size: 19px; }
 .modal-box p { margin: 0 0 10px; font-size: 15px; line-height: 1.45; }
 .modal-acts { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+
+/* ---------------------------------------------------------------- sign in
+   The desk is not chosen yet at this point, so this surface belongs to none of them.
+   It carries all three: steel, claret and plum across the masthead, and the three
+   accents (amber, gold, old gold) in the hairline under it. The one-accent rule is a
+   rule about a desk's surface; this one is the door, before a desk is picked. */
+#auth .hd {
+  background:
+    linear-gradient(118deg, var(--soc-d) 0%, var(--soc) 26%, var(--ess) 54%,
+                    var(--ess-d) 66%, var(--gs) 86%, var(--gs-d) 100%);
+}
+#auth .hd::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+  background: linear-gradient(90deg, var(--soc-a) 0%, var(--soc-a) 30%,
+              var(--ess-a) 38%, var(--ess-a) 62%, var(--gs-a) 70%, var(--gs-a) 100%);
+}
+#auth .body { background: linear-gradient(180deg, rgba(30, 58, 95, .05) 0%,
+              rgba(122, 45, 58, .04) 45%, rgba(62, 42, 82, .05) 100%); }
+#auth h1 { background: linear-gradient(96deg, var(--soc) 0%, var(--ess) 52%, var(--gs) 100%);
+  -webkit-background-clip: text; background-clip: text; color: transparent; }
+#auth .btn {
+  background: linear-gradient(112deg, var(--soc) 0%, var(--ess) 55%, var(--gs) 100%);
+  border-color: transparent; color: #fff;
+}
+#auth .btn:hover { filter: brightness(1.08); }
+#auth input:focus { outline-color: var(--ess-a); }
+/* the three desks named under the door, so it is plain what this one page covers */
+#auth .desks-hint { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; font-size: 11.5px; }
+#auth .desks-hint span { padding: 3px 9px; border-radius: 999px; color: #fff; }
+#auth .desks-hint .d1 { background: var(--soc); }
+#auth .desks-hint .d2 { background: var(--ess); }
+#auth .desks-hint .d3 { background: var(--gs); }
