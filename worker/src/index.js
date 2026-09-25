@@ -20,6 +20,14 @@ export default {
       if (req.method === 'POST' && pathname === '/auth/request') return await authRequest(req, env);
       if (req.method === 'POST' && pathname === '/auth/verify') return await authVerify(req, env);
 
+      // The desk's own pipeline marks the specimen answer it publishes each day. It holds a
+      // service key rather than a person's token, so it spends nobody's allowance and is
+      // never counted as a person's usage.
+      const svc = env.SERVICE_KEY && req.headers.get('x-service-key') === env.SERVICE_KEY;
+      if (svc && req.method === 'POST' && pathname === '/evaluate') {
+        return await evaluate(req, env, 'pipeline@upscdesk.com', true);
+      }
+
       // everything past here needs a signed-in email
       const email = await readToken(env, req.headers.get('authorization'));
       if (pathname === '/me' || pathname === '/evaluate') {

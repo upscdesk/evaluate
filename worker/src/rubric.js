@@ -120,5 +120,5 @@ The question as set:
 ${question}
 
 ${answer ? `The answer, as typed by the candidate:\n${answer}`
-         : 'The answer is in the attached photograph of a handwritten script. Transcribe it faithfully first, keeping the paragraph breaks, and mark what is actually written, not what you think was meant.'}`;
+         : 'The answer is in the attached photograph or scan of a handwritten script. Transcribe it faithfully first, keeping the paragraph breaks, and mark what is actually written, not what you think was meant.'}`;
 }
